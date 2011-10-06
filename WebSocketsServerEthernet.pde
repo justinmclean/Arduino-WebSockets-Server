@@ -27,21 +27,28 @@ void setup()
 String readLine(Client client)
 {
   String data;
+  boolean lineEnd = false;
 
-  while (client.available()) 
+  while (!lineEnd) 
   {
-    char c = client.read();
+    if (client.available()) {
+      char c = client.read();
 
-    data.concat(c);
-    if (c == '\n') {
-      return data;
-    }  
+      if (c != '\n' && c != '\r') {
+        data.concat(c);
+      }
+      if (c == '\n') {
+        lineEnd = true;
+      }
+    }
   }
+  
+  return data;
 }
 
 // Return true is line is "blank"
 boolean blankLine(String line) {
-  return (line.length() == 2 && line[0] == '\r' && line[1] == '\n');
+  return (line.length() == 0);
 }
 
 // Send a standard http response header
